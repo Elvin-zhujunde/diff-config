@@ -1,0 +1,29 @@
+{
+  "name": "def-vite-vue",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "element-plus": "^2.10.4",
+    "lodash": "^4.17.21",
+    "monaco-editor": "^0.52.2",
+    "pinia": "^3.0.3",
+    "vue": "^3.5.12",
+    "vue-router": "^4.5.1",
+    "vxe-pc-ui": "^4.7.5",
+    "vxe-table": "^4.6.17"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "less": "^4.3.0",
+    "typescript": "~5.6.2",
+    "vite": "^5.4.10",
+    "vue-tsc": "^2.1.8"
+  }
+}
