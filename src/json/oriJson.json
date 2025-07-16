@@ -1,0 +1,60 @@
+{
+  "menu": {
+    "id": 1,
+    "name": "菜单管理",
+    "child": [
+      {
+        "id": 101,
+        "label": "首页",
+        "path": "/howsme",
+        "child": [
+          {
+            "id": 1011,
+            "label": "首页1",
+            "path": "/home1"
+          },
+          {
+            "id": 1012,
+            "label": "首页2",
+            "path": "/home2"
+          }
+        ]
+      },
+      {
+        "id": 102,
+        "label": "设置",
+        "path": "/settings"
+      }
+    ]
+  },
+  "role": {
+    "id": 2,
+    "name": "项目成员",
+    "children": [
+      {
+        "id": 201,
+        "roleName": "项目经理"
+      },
+      {
+        "id": 202,
+        "roleName": "项目读1者"
+      }
+    ]
+  },
+  "department": [
+    {
+      "id": 3,
+      "name": "部2门管理",
+      "departments": [
+        {
+          "id": 301,
+          "deptName": "技术部"
+        },
+        {
+          "id": 302,
+          "deptName": "人事部"
+        }
+      ]
+    }
+  ]
+}
