@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "首页1",
+    "label": "首页1",
     "url": "/home1",
     "children": [
       {
@@ -59,7 +59,7 @@
   },
   {
     "id": 2,
-    "name": "项目管理",
+    "label": "项目管理",
     "url": "/project",
     "children": [
       {
@@ -98,7 +98,7 @@
   },
   {
     "id": 3,
-    "name": "首页2",
+    "label": "首页2",
     "url": "/home2",
     "children": [
       {
@@ -127,7 +127,7 @@
   },
   {
     "id": 4,
-    "name": "用户管理",
+    "label": "用户管理",
     "url": "/user",
     "children": [
       { "id": 401, "label": "用户列表", "path": "/user/list" },
@@ -138,7 +138,7 @@
   },
   {
     "id": 5,
-    "name": "系统管理",
+    "label": "系统管理",
     "url": "/system",
     "children": [
       { "id": 501, "label": "参数设置", "path": "/system/params" },
@@ -150,7 +150,7 @@
   },
   {
     "id": 6,
-    "name": "运维中心",
+    "label": "运维中心",
     "url": "/ops",
     "children": [
       { "id": 601, "label": "监控", "path": "/ops/monitor" },
@@ -163,7 +163,7 @@
   },
   {
     "id": 7,
-    "name": "知识库",
+    "label": "知识库",
     "url": "/wiki",
     "children": [
       { "id": 701, "label": "文档中心", "path": "/wiki/docs" },
@@ -175,7 +175,7 @@
   },
   {
     "id": 8,
-    "name": "运营中心",
+    "label": "运营中心",
     "url": "/operation",
     "children": [
       { "id": 801, "label": "活动管理", "path": "/operation/activity" },

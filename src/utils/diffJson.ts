@@ -13,6 +13,7 @@ export interface DiffResult {
   newValue?: any;
   children?: DiffResult[]; // 仅有子差异时生成
   pathReadable?: string; // 更友好的可读路径
+  pathBusiness?: string; // 业务路径
 }
 
 let diffIdSeed = 1;
@@ -35,15 +36,33 @@ function buildPath(parent: string, key: string | number) {
  * @param newData 新数据
  * @param parentPath 路径前缀
  * @param parentReadablePath 可读路径前缀
+ * @param ignoreFields 需要忽略的字段数组
+ * @param businessKey 业务路径属性名
+ * @param parentBusinessPath 业务路径前缀
  * @returns DiffResult[] 差异列表，带唯一 id
  */
 export function diffJson(
   oldData: any,
   newData: any,
   parentPath = '',
-  parentReadablePath = ''
+  parentReadablePath = '',
+  ignoreFields: string[] = [],
+  businessKey: string = '',
+  parentBusinessPath = ''
 ): DiffResult[] {
   const diffs: DiffResult[] = [];
+
+  // 业务路径拼接函数
+  function getBusinessPath(parent: string, key: string | number, value: any) {
+    if (!businessKey) return parent ? `${parent} > ${key}` : String(key);
+    let label = '';
+    if (typeof value === 'object' && value !== null && businessKey in value) {
+      label = value[businessKey];
+    } else {
+      label = String(key);
+    }
+    return parent ? `${parent} > ${label}` : label;
+  }
 
   // 类型不同，直接 update
   if (typeof oldData !== typeof newData || Array.isArray(oldData) !== Array.isArray(newData)) {
@@ -54,6 +73,7 @@ export function diffJson(
       oldValue: oldData,
       newValue: newData,
       pathReadable: parentReadablePath || parentPath,
+      pathBusiness: parentBusinessPath,
     } as any);
     return diffs;
   }
@@ -64,6 +84,7 @@ export function diffJson(
     const newKeys = Object.keys(newData);
     // 删除
     for (const key of oldKeys) {
+      if (ignoreFields.includes(key)) continue;
       if (!(key in newData)) {
         diffs.push({
           id: `diff_${diffIdSeed++}`,
@@ -71,11 +92,13 @@ export function diffJson(
           path: buildPath(parentPath, key),
           oldValue: oldData[key],
           pathReadable: parentReadablePath ? `${parentReadablePath} > ${key}` : key,
+          pathBusiness: getBusinessPath(parentBusinessPath, key, oldData[key]),
         } as any);
       }
     }
     // 新增和递归
     for (const key of newKeys) {
+      if (ignoreFields.includes(key)) continue;
       if (!(key in oldData)) {
         diffs.push({
           id: `diff_${diffIdSeed++}`,
@@ -83,6 +106,7 @@ export function diffJson(
           path: buildPath(parentPath, key),
           newValue: newData[key],
           pathReadable: parentReadablePath ? `${parentReadablePath} > ${key}` : key,
+          pathBusiness: getBusinessPath(parentBusinessPath, key, newData[key]),
         } as any);
       } else {
         // 递归，若有子差异则作为 children
@@ -90,7 +114,10 @@ export function diffJson(
           oldData[key],
           newData[key],
           buildPath(parentPath, key),
-          parentReadablePath ? `${parentReadablePath} > ${key}` : key
+          parentReadablePath ? `${parentReadablePath} > ${key}` : key,
+          ignoreFields,
+          businessKey,
+          getBusinessPath(parentBusinessPath, key, newData[key])
         );
         if (children.length > 0) {
           const node: DiffResult = {
@@ -101,6 +128,7 @@ export function diffJson(
             newValue: newData[key],
             children,
             pathReadable: parentReadablePath ? `${parentReadablePath} > ${key}` : key,
+            pathBusiness: getBusinessPath(parentBusinessPath, key, newData[key]),
           } as any;
           diffs.push(node);
         }
@@ -118,7 +146,10 @@ export function diffJson(
         oldData[i],
         newData[i],
         buildPath(parentPath, i),
-        parentReadablePath ? `${parentReadablePath} > [${i}]` : `[${i}]`
+        parentReadablePath ? `${parentReadablePath} > [${i}]` : `[${i}]`,
+        ignoreFields,
+        businessKey,
+        getBusinessPath(parentBusinessPath, `[${i}]`, newData[i])
       );
       if (children.length > 0) {
         const node: DiffResult = {
@@ -129,6 +160,7 @@ export function diffJson(
           newValue: newData[i],
           children,
           pathReadable: parentReadablePath ? `${parentReadablePath} > [${i}]` : `[${i}]`,
+          pathBusiness: getBusinessPath(parentBusinessPath, `[${i}]`, newData[i]),
         } as any;
         diffs.push(node);
       }
@@ -141,6 +173,7 @@ export function diffJson(
         path: buildPath(parentPath, i),
         oldValue: oldData[i],
         pathReadable: parentReadablePath ? `${parentReadablePath} > [${i}]` : `[${i}]`,
+        pathBusiness: getBusinessPath(parentBusinessPath, `[${i}]`, oldData[i]),
       } as any);
     }
     // new 多余部分为新增
@@ -151,6 +184,7 @@ export function diffJson(
         path: buildPath(parentPath, i),
         newValue: newData[i],
         pathReadable: parentReadablePath ? `${parentReadablePath} > [${i}]` : `[${i}]`,
+        pathBusiness: getBusinessPath(parentBusinessPath, `[${i}]`, newData[i]),
       } as any);
     }
     return diffs;
@@ -165,6 +199,7 @@ export function diffJson(
       oldValue: oldData,
       newValue: newData,
       pathReadable: parentReadablePath || parentPath,
+      pathBusiness: parentBusinessPath,
     } as any);
   }
   return diffs;

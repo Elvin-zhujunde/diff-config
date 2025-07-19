@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "name": "首页1",
+        "label": "首页1",
         "url": "/home11",
         "children": [
             {
@@ -17,7 +17,7 @@
                     {
                         "id": 1022,
                         "label": "安全设置",
-                        "path": "/settings/security",
+                        "path": "/settings/security1",
                         "children": [
                             {
                                 "id": 10221,
@@ -59,7 +59,7 @@
     },
     {
         "id": 2,
-        "name": "项目管理",
+        "label": "项目管理",
         "url": "/project",
         "children": [
             {
@@ -142,7 +142,7 @@
     },
     {
         "id": 3,
-        "name": "首页2",
+        "label": "首页2",
         "url": "/home2",
         "children": [
             {
@@ -203,7 +203,7 @@
     },
     {
         "id": 4,
-        "name": "用户管理",
+        "label": "用户管理",
         "url": "/user",
         "children": [
             {
@@ -230,7 +230,7 @@
     },
     {
         "id": 5,
-        "name": "系统管理",
+        "label": "系统管理",
         "url": "/system",
         "children": [
             {
@@ -262,7 +262,7 @@
     },
     {
         "id": 7,
-        "name": "知识库",
+        "label": "知识库",
         "url": "/wiki",
         "children": [
             {
@@ -294,7 +294,7 @@
     },
     {
         "id": 8,
-        "name": "运营中心",
+        "label": "运营中心",
         "url": "/operation",
         "children": [
             {
@@ -326,7 +326,7 @@
     },
     {
         "id": 6,
-        "name": "运维中心",
+        "label": "运维中心",
         "url": "/ops",
         "children": [
             {

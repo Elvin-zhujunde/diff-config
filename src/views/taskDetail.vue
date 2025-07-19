@@ -18,6 +18,41 @@
       <el-button size="small" type="primary" @click="onPrintCurrent"
         >获取当前数据</el-button
       >
+      <div class="ignore-fields">
+        <span>忽略字段：</span>
+        <el-tag
+          v-for="field in ignoreFields"
+          :key="field"
+          closable
+          @close="removeIgnoreField(field)"
+          style="margin-right: 4px;"
+        >{{ field }}</el-tag>
+        <el-input
+          v-model="ignoreInput"
+          size="small"
+          placeholder="添加字段"
+          style="width: 120px; margin-left: 4px;"
+          @keyup.enter="addIgnoreField"
+        />
+        <el-button size="small" @click="addIgnoreField" style="margin-left: 4px;">添加</el-button>
+      </div>
+      <div class="business-key">
+        <span>业务路径字段：</span>
+        <el-input
+          v-model="businessKeyInput"
+          size="small"
+          placeholder="如 label、name"
+          style="width: 100px; margin-left: 4px;"
+          @keyup.enter="updateBusinessKey"
+        />
+        <el-button size="small" @click="updateBusinessKey" style="margin-left: 4px;">应用</el-button>
+        <span style="margin-left:8px;color:#888;">当前：{{ businessKey }}</span>
+      </div>
+      <div class="status-count">
+        <el-tag type="success">已接受：{{ statusCount.accepted }}</el-tag>
+        <el-tag type="info">未处理：{{ statusCount.pending }}</el-tag>
+        <el-tag type="warning">已忽略：{{ statusCount.ignored }}</el-tag>
+      </div>
     </div>
     <vxe-table
       ref="xTable"
@@ -30,14 +65,14 @@
       size="medium"
       :scroll-y="{ enabled: true, gt: 100 }"
       :virtual-tree="true"
-      height="900"
+      height="1200"
       @checkbox-change="onCheckboxChange"
       @checkbox-all="onCheckboxChange"
     >
       <vxe-column type="checkbox" width="50" />
-      <vxe-column field="pathReadable" title="路径" tree-node width="320">
+      <vxe-column field="pathBusiness" title="路径" tree-node width="320">
         <template #default="{ row }">
-          <span class="path-readable">{{ row.pathReadable }}</span>
+          <span class="path-readable">{{ row.pathBusiness }}</span>
         </template>
       </vxe-column>
       <vxe-column
@@ -110,7 +145,81 @@ function addStatusToDiffTree(tree: DiffResult[], parent: any = null): any[] {
   });
 }
 
-const diffTreeData = ref<any[]>(addStatusToDiffTree(diffJson(oldJson, newJson)));
+// 白名单字段编辑功能
+const ignoreFields = ref<string[]>([]);
+const ignoreInput = ref('');
+function addIgnoreField() {
+  const val = ignoreInput.value.trim();
+  if (val && !ignoreFields.value.includes(val)) {
+    ignoreFields.value.push(val);
+    ignoreInput.value = '';
+    reloadDiff();
+  }
+}
+function removeIgnoreField(field: string) {
+  ignoreFields.value = ignoreFields.value.filter(f => f !== field);
+  reloadDiff();
+}
+const statusCount = ref({ accepted: 0, pending: 0, ignored: 0 });
+function updateStatusCount() {
+  const count = { accepted: 0, pending: 0, ignored: 0 };
+  function walk(nodes: any[]) {
+    nodes.forEach(node => {
+      if (node.status === 'accepted') count.accepted++;
+      else if (node.status === 'ignored') count.ignored++;
+      else count.pending++;
+      if (node.children && node.children.length > 0) walk(node.children);
+    });
+  }
+  walk(diffTreeData.value);
+  statusCount.value = count;
+}
+// 在diff数据初始化和每次变更后都调用
+nextTick(() => updateStatusCount());
+
+const businessKey = ref('label');
+const businessKeyInput = ref('');
+function updateBusinessKey() {
+  if (businessKeyInput.value.trim()) {
+    businessKey.value = businessKeyInput.value.trim();
+    reloadDiff();
+  }
+}
+
+// 修改 reloadDiff，操作后统计
+function reloadDiff() {
+  // 1. 先保存当前 diffTreeData 的 status 映射（path -> status）
+  const statusMap = new Map<string, string>();
+  function collectStatus(nodes: any[]) {
+    nodes.forEach(node => {
+      statusMap.set(node.path, node.status);
+      if (node.children && node.children.length > 0) {
+        collectStatus(node.children);
+      }
+    });
+  }
+  collectStatus(diffTreeData.value);
+
+  // 2. 重新生成 diffTreeData
+  const newTree = addStatusToDiffTree(diffJson(oldJson, newJson, '', '', ignoreFields.value, businessKey.value));
+
+  // 3. 递归同步 status
+  function syncStatus(nodes: any[]) {
+    nodes.forEach(node => {
+      if (statusMap.has(node.path)) {
+        node.status = statusMap.get(node.path);
+      }
+      if (node.children && node.children.length > 0) {
+        syncStatus(node.children);
+      }
+    });
+  }
+  syncStatus(newTree);
+  diffTreeData.value = newTree;
+  nextTick(() => updateStatusCount());
+}
+
+const diffTreeData = ref<any[]>(addStatusToDiffTree(diffJson(oldJson, newJson, '', '', ignoreFields.value, businessKey.value)));
 const xTable = ref();
 const selection = ref<any[]>([]);
 const hasSelection = ref(false);
@@ -154,6 +263,7 @@ function accept(row: any) {
     row.children.forEach((child: any) => accept(child));
   }
   updateParentStatus(row);
+  nextTick(() => updateStatusCount());
 }
 function ignore(row: any) {
   row.status = "ignored";
@@ -161,6 +271,7 @@ function ignore(row: any) {
     row.children.forEach((child: any) => ignore(child));
   }
   updateParentStatus(row);
+  nextTick(() => updateStatusCount());
 }
 function revoke(row: any) {
   row.status = "pending";
@@ -168,6 +279,7 @@ function revoke(row: any) {
     row.children.forEach((child: any) => revoke(child));
   }
   updateParentStatus(row);
+  nextTick(() => updateStatusCount());
 }
 
 // 递归批量操作
@@ -178,6 +290,7 @@ function batchSetStatus(rows: any[], status: string, cover = false) {
       if (row.children && row.children.length > 0) batchSetStatus(row.children, status, cover);
     }
   });
+  nextTick(() => updateStatusCount());
 }
 
 // vxe-table 勾选变化
@@ -336,5 +449,21 @@ function stripParent(obj: any) {
   font-weight: 500;
   font-size: 15px;
   word-break: break-all;
+}
+.ignore-fields {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 24px;
+}
+.business-key {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 24px;
+}
+.status-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 32px;
 }
 </style>
