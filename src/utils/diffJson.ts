@@ -39,6 +39,7 @@ function buildPath(parent: string, key: string | number) {
  * @param ignoreFields 需要忽略的字段数组
  * @param businessKey 业务路径属性名
  * @param parentBusinessPath 业务路径前缀
+ * @param meta 可扩展参数，如 nextParamsName
  * @returns DiffResult[] 差异列表，带唯一 id
  */
 export function diffJson(
@@ -48,12 +49,15 @@ export function diffJson(
   parentReadablePath = '',
   ignoreFields: string[] = [],
   businessKey: string = '',
-  parentBusinessPath = ''
+  parentBusinessPath = '',
+  meta: { nextParamsName?: string } = {}
 ): DiffResult[] {
   const diffs: DiffResult[] = [];
+  const nextParamsName = meta.nextParamsName || 'children';
 
   // 业务路径拼接函数
   function getBusinessPath(parent: string, key: string | number, value: any) {
+    if (key === nextParamsName) return parent; // 跳过结构字段
     if (!businessKey) return parent ? `${parent} > ${key}` : String(key);
     let label = '';
     if (typeof value === 'object' && value !== null && businessKey in value) {
@@ -110,15 +114,32 @@ export function diffJson(
         } as any);
       } else {
         // 递归，若有子差异则作为 children
-        const children = diffJson(
-          oldData[key],
-          newData[key],
-          buildPath(parentPath, key),
-          parentReadablePath ? `${parentReadablePath} > ${key}` : key,
-          ignoreFields,
-          businessKey,
-          getBusinessPath(parentBusinessPath, key, newData[key])
-        );
+        // 判断是否是子节点字段
+        let children: any[] = [];
+        if (key === nextParamsName && Array.isArray(oldData[key]) && Array.isArray(newData[key])) {
+          // 直接对比数组
+          children = diffJson(
+            oldData[key],
+            newData[key],
+            buildPath(parentPath, key),
+            parentReadablePath ? `${parentReadablePath} > ${key}` : key,
+            ignoreFields,
+            businessKey,
+            getBusinessPath(parentBusinessPath, key, newData[key]),
+            meta
+          );
+        } else {
+          children = diffJson(
+            oldData[key],
+            newData[key],
+            buildPath(parentPath, key),
+            parentReadablePath ? `${parentReadablePath} > ${key}` : key,
+            ignoreFields,
+            businessKey,
+            getBusinessPath(parentBusinessPath, key, newData[key]),
+            meta
+          );
+        }
         if (children.length > 0) {
           const node: DiffResult = {
             id: `diff_${diffIdSeed++}`,
@@ -149,7 +170,8 @@ export function diffJson(
         parentReadablePath ? `${parentReadablePath} > [${i}]` : `[${i}]`,
         ignoreFields,
         businessKey,
-        getBusinessPath(parentBusinessPath, `[${i}]`, newData[i])
+        getBusinessPath(parentBusinessPath, `[${i}]`, newData[i]),
+        meta
       );
       if (children.length > 0) {
         const node: DiffResult = {
