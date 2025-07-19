@@ -35,18 +35,20 @@
       @checkbox-all="onCheckboxChange"
     >
       <vxe-column type="checkbox" width="50" />
-      <vxe-column field="pathReadable" title="路径" tree-node width="260" />
+      <vxe-column field="pathReadable" title="路径" tree-node width="320">
+        <template #default="{ row }">
+          <span class="path-readable">{{ row.pathReadable }}</span>
+        </template>
+      </vxe-column>
       <vxe-column
         field="oldValue"
         title="修改前的值"
         :formatter="formatValue"
-        width="180"
       />
       <vxe-column
         field="newValue"
         title="修改后的值"
         :formatter="formatValue"
-        width="180"
       />
       <vxe-column field="type" title="变更类型" width="100">
         <template #default="{ row }">
@@ -75,12 +77,16 @@
     </vxe-table>
     <el-dialog v-model="batchDialog.visible" title="批量操作确认" width="400px">
       <div>
-        确定要对选中的 <b>{{ batchDialog.count }}</b> 条数据执行
-        <b>{{ batchDialog.actionText }}</b> 操作吗？
+        <div>确定要对选中的 <b>{{ batchDialog.count }}</b> 条数据执行 <b>{{ batchDialog.actionText }}</b> 操作吗？</div>
+        <div v-if="batchDialog.hasProcessed" style="color:#e6a23c;margin-top:10px;">
+          勾选项中包含已处理（已接受/已忽略）的数据，是否覆盖这些项的状态？
+        </div>
       </div>
       <template #footer>
         <el-button @click="batchDialog.visible = false">取消</el-button>
-        <el-button type="primary" @click="onBatchConfirm">确定</el-button>
+        <el-button v-if="batchDialog.hasProcessed" type="primary" @click="onBatchConfirm(true)">覆盖</el-button>
+        <el-button v-if="batchDialog.hasProcessed" type="success" @click="onBatchConfirm(false)">不覆盖</el-button>
+        <el-button v-else type="primary" @click="onBatchConfirm(false)">确定</el-button>
       </template>
     </el-dialog>
   </div>
@@ -165,10 +171,12 @@ function revoke(row: any) {
 }
 
 // 递归批量操作
-function batchSetStatus(rows: any[], status: string) {
+function batchSetStatus(rows: any[], status: string, cover = false) {
   rows.forEach((row) => {
-    row.status = status;
-    if (row.children && row.children.length > 0) batchSetStatus(row.children, status);
+    if (cover || row.status === 'pending') {
+      row.status = status;
+      if (row.children && row.children.length > 0) batchSetStatus(row.children, status, cover);
+    }
   });
 }
 
@@ -179,28 +187,37 @@ function onCheckboxChange({ records }: { records: any[] }) {
 }
 
 // 批量操作弹窗
-const batchDialog = ref({ visible: false, action: "", actionText: "", count: 0 });
-let batchActionStatus = "";
+const batchDialog = ref({ visible: false, action: '', actionText: '', count: 0, hasProcessed: false });
+let batchActionStatus = '';
+let batchSelection: any[] = [];
+let batchCover = false;
+
 function onBatchAccept() {
-  batchDialog.value = {
-    visible: true,
-    action: "accept",
-    actionText: "接受",
-    count: selection.value.length,
-  };
-  batchActionStatus = "accepted";
+  prepareBatchDialog('accept', '接受');
 }
 function onBatchIgnore() {
+  prepareBatchDialog('ignore', '忽略');
+}
+function prepareBatchDialog(action: string, actionText: string) {
+  batchSelection = selection.value.slice();
+  batchActionStatus = action === 'accept' ? 'accepted' : 'ignored';
+  // 判断是否有已处理项
+  const hasProcessed = batchSelection.some(row => row.status !== 'pending');
   batchDialog.value = {
     visible: true,
-    action: "ignore",
-    actionText: "忽略",
-    count: selection.value.length,
+    action,
+    actionText,
+    count: batchSelection.length,
+    hasProcessed
   };
-  batchActionStatus = "ignored";
 }
-function onBatchConfirm() {
-  batchSetStatus(selection.value, batchActionStatus);
+function onBatchConfirm(cover = false) {
+  batchCover = cover;
+  if (batchCover) {
+    batchSetStatus(batchSelection, batchActionStatus, true);
+  } else {
+    batchSetStatus(batchSelection, batchActionStatus, false);
+  }
   batchDialog.value.visible = false;
   // 取消勾选
   nextTick(() => {
@@ -313,5 +330,11 @@ function stripParent(obj: any) {
 .diff-type-update {
   color: #e6a23c;
   font-weight: bold;
+}
+.path-readable {
+  color: #409eff;
+  font-weight: 500;
+  font-size: 15px;
+  word-break: break-all;
 }
 </style>
