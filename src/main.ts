@@ -10,6 +10,9 @@ import "vxe-pc-ui/lib/style.css";
 import VxeUITable from "vxe-table";
 import "vxe-table/lib/style.css";
 const app = createApp(App);
+
+
+
 app.use(router).use(VxeUIAll).use(VxeUITable);
 app.use(pinia);
 app.use(ElementPlus);
