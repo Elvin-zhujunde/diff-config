@@ -13,4 +13,12 @@ const app = createApp(App);
 app.use(router).use(VxeUIAll).use(VxeUITable);
 app.use(pinia);
 app.use(ElementPlus);
+
+import menu from './json/menu.json'
+import menuDiff from './json/menuDiff.json'
+import { diffJson } from "./utils/diffJson";
+
+
+console.log(diffJson(menu, menuDiff, 'wtf'));
+
 app.mount("#app");

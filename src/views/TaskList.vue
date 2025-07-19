@@ -5,13 +5,16 @@
     >
     <el-button type="primary">导出JSON数据</el-button>
   </div>
-  <el-table :data="tableData" style="width: 100%">
-    <!-- <el-table-column type="selection" :selectable="selectable" width="55" /> -->
-
+  <el-table
+    :data="tableData"
+    style="width: 100%"
+    row-key="id"
+    :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+  >
     <el-table-column fixed prop="date" label="日期" width="150" />
-    <el-table-column prop="name" label="版本名称" width="120" />
-    <el-table-column prop="No" label="版本号" width="120" />
-    <el-table-column fixed="right" label="操作栏" min-width="120">
+    <el-table-column prop="name" label="任务名称" width="180" />
+    <el-table-column prop="No" label="任务编号" width="120" />
+    <el-table-column fixed="right" label="操作栏" min-width="180">
       <template #default>
         <el-button link type="primary" size="small" @click="handleClick">
           详情
@@ -53,31 +56,64 @@ const dialogVisible = ref(false);
 
 const tableData = [
   {
-    date: "2016-05-03",
-    name: "已发布任务一",
-    city: "Los Angeles",
-    No: "CA 90036",
-    tag: "Home",
+    id: 1,
+    date: "2024-06-01",
+    name: "主任务一",
+    No: "T-1001",
+    children: [
+      {
+        id: 11,
+        date: "2024-06-01",
+        name: "子任务1-1",
+        No: "T-1001-1",
+      },
+      {
+        id: 12,
+        date: "2024-06-01",
+        name: "子任务1-2",
+        No: "T-1001-2",
+      },
+    ],
   },
   {
-    date: "2016-05-02",
-    name: "已发布任务二",
-    No: "CA 90036",
-    tag: "Office",
+    id: 2,
+    date: "2024-06-02",
+    name: "主任务二",
+    No: "T-1002",
+    children: [
+      {
+        id: 21,
+        date: "2024-06-02",
+        name: "子任务2-1",
+        No: "T-1002-1",
+      },
+      {
+        id: 22,
+        date: "2024-06-02",
+        name: "子任务2-2",
+        No: "T-1002-2",
+      },
+      {
+        id: 23,
+        date: "2024-06-02",
+        name: "子任务2-3",
+        No: "T-1002-3",
+      },
+    ],
   },
   {
-    date: "2016-05-04",
-    name: "已发布任务三",
-
-    No: "CA 90036",
-    tag: "Home",
-  },
-  {
-    date: "2016-05-01",
-    name: "已发布任务四",
-
-    No: "CA 90036",
-    tag: "Office",
+    id: 3,
+    date: "2024-06-03",
+    name: "主任务三",
+    No: "T-1003",
+    children: [
+      {
+        id: 31,
+        date: "2024-06-03",
+        name: "子任务3-1",
+        No: "T-1003-1",
+      },
+    ],
   },
 ];
 </script>

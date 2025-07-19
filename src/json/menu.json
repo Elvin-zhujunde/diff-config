@@ -1,0 +1,188 @@
+[
+  {
+    "id": 1,
+    "name": "首页1",
+    "url": "/home1",
+    "children": [
+      {
+        "id": 102,
+        "label": "设置",
+        "path": "/settings",
+        "children": [
+          {
+            "id": 1021,
+            "label": "个人信息",
+            "path": "/settings/profile"
+          },
+          {
+            "id": 1022,
+            "label": "安全设置",
+            "path": "/settings/security",
+            "children": [
+              {
+                "id": 10221,
+                "label": "密码修改",
+                "path": "/settings/security/password"
+              },
+              {
+                "id": 10222,
+                "label": "二次验证",
+                "path": "/settings/security/2fa"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 103,
+        "label": "消息中心",
+        "path": "/messages",
+        "children": [
+          {
+            "id": 1031,
+            "label": "系统消息",
+            "path": "/messages/system"
+          },
+          {
+            "id": 1032,
+            "label": "通知",
+            "path": "/messages/notify"
+          },
+          {
+            "id": 1033,
+            "label": "私信",
+            "path": "/messages/private"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "项目管理",
+    "url": "/project",
+    "children": [
+      {
+        "id": 201,
+        "label": "项目列表",
+        "path": "/project/list",
+        "children": [
+          { "id": 2011, "label": "进行中", "path": "/project/list/active" },
+          { "id": 2012, "label": "已归档", "path": "/project/list/archived" },
+          { "id": 2013, "label": "回收站", "path": "/project/list/recycle" }
+        ]
+      },
+      {
+        "id": 202,
+        "label": "项目详情",
+        "path": "/project/detail",
+        "children": [
+          { "id": 2021, "label": "基本信息", "path": "/project/detail/base" },
+          { "id": 2022, "label": "成员管理", "path": "/project/detail/members" },
+          { "id": 2023, "label": "进度", "path": "/project/detail/progress" },
+          { "id": 2024, "label": "文档", "path": "/project/detail/docs" }
+        ]
+      },
+      {
+        "id": 203,
+        "label": "项目设置",
+        "path": "/project/settings",
+        "children": [
+          { "id": 2031, "label": "权限设置", "path": "/project/settings/permission" },
+          { "id": 2032, "label": "通知设置", "path": "/project/settings/notify" },
+          { "id": 2033, "label": "集成", "path": "/project/settings/integration" },
+          { "id": 2034, "label": "API", "path": "/project/settings/api" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "首页2",
+    "url": "/home2",
+    "children": [
+      {
+        "id": 301,
+        "label": "仪表盘",
+        "path": "/dashboard",
+        "children": [
+          { "id": 3011, "label": "数据概览", "path": "/dashboard/overview" },
+          { "id": 3012, "label": "趋势分析", "path": "/dashboard/trend" },
+          { "id": 3013, "label": "告警", "path": "/dashboard/alert" },
+          { "id": 3014, "label": "日志", "path": "/dashboard/log" }
+        ]
+      },
+      {
+        "id": 302,
+        "label": "报表",
+        "path": "/reports",
+        "children": [
+          { "id": 3021, "label": "日报", "path": "/reports/daily" },
+          { "id": 3022, "label": "周报", "path": "/reports/weekly" },
+          { "id": 3023, "label": "月报", "path": "/reports/monthly" },
+          { "id": 3024, "label": "自定义报表", "path": "/reports/custom" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "用户管理",
+    "url": "/user",
+    "children": [
+      { "id": 401, "label": "用户列表", "path": "/user/list" },
+      { "id": 402, "label": "角色管理", "path": "/user/roles" },
+      { "id": 403, "label": "权限分配", "path": "/user/permission" },
+      { "id": 404, "label": "用户日志", "path": "/user/log" }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "系统管理",
+    "url": "/system",
+    "children": [
+      { "id": 501, "label": "参数设置", "path": "/system/params" },
+      { "id": 502, "label": "字典管理", "path": "/system/dict" },
+      { "id": 503, "label": "操作日志", "path": "/system/operation" },
+      { "id": 504, "label": "登录日志", "path": "/system/loginlog" },
+      { "id": 505, "label": "系统公告", "path": "/system/notice" }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "运维中心",
+    "url": "/ops",
+    "children": [
+      { "id": 601, "label": "监控", "path": "/ops/monitor" },
+      { "id": 602, "label": "告警", "path": "/ops/alert" },
+      { "id": 603, "label": "作业", "path": "/ops/job" },
+      { "id": 604, "label": "发布", "path": "/ops/deploy" },
+      { "id": 605, "label": "备份", "path": "/ops/backup" },
+      { "id": 606, "label": "恢复", "path": "/ops/restore" }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "知识库",
+    "url": "/wiki",
+    "children": [
+      { "id": 701, "label": "文档中心", "path": "/wiki/docs" },
+      { "id": 702, "label": "FAQ", "path": "/wiki/faq" },
+      { "id": 703, "label": "教程", "path": "/wiki/tutorial" },
+      { "id": 704, "label": "API文档", "path": "/wiki/api" },
+      { "id": 705, "label": "开发规范", "path": "/wiki/standard" }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "运营中心",
+    "url": "/operation",
+    "children": [
+      { "id": 801, "label": "活动管理", "path": "/operation/activity" },
+      { "id": 802, "label": "广告管理", "path": "/operation/ad" },
+      { "id": 803, "label": "内容管理", "path": "/operation/content" },
+      { "id": 804, "label": "用户反馈", "path": "/operation/feedback" },
+      { "id": 805, "label": "数据分析", "path": "/operation/analysis" }
+    ]
+  }
+]
