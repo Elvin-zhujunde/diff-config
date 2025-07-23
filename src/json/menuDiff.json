@@ -2,7 +2,7 @@
     {
         "id": 1,
         "label": "首页1",
-        "url": "/home11",
+        "url": "/home1",
         "children": [
             {
                 "id": 102,
@@ -12,12 +12,12 @@
                     {
                         "id": 1021,
                         "label": "个人信息",
-                        "path": "/sett1ings/profile"
+                        "path": "/settings/profile"
                     },
                     {
                         "id": 1022,
                         "label": "安全设置",
-                        "path": "/settings/security1",
+                        "path": "/settings/security",
                         "children": [
                             {
                                 "id": 10221,
@@ -229,6 +229,43 @@
         ]
     },
     {
+        "id": 6,
+        "label": "运维中心",
+        "url": "/ops",
+        "children": [
+            {
+                "id": 601,
+                "label": "监控",
+                "path": "/ops/monitor"
+            },
+            {
+                "id": 602,
+                "label": "告警",
+                "path": "/ops/alert"
+            },
+            {
+                "id": 603,
+                "label": "作业",
+                "path": "/ops/job"
+            },
+            {
+                "id": 604,
+                "label": "发布",
+                "path": "/ops/deploy"
+            },
+            {
+                "id": 605,
+                "label": "备份",
+                "path": "/ops/backup"
+            },
+            {
+                "id": 606,
+                "label": "恢复",
+                "path": "/ops/restore"
+            }
+        ]
+    },
+    {
         "id": 5,
         "label": "系统管理",
         "url": "/system",
@@ -277,13 +314,13 @@
             },
             {
                 "id": 703,
-                "label": "教程",
+                "label": "教程1",
                 "path": "/wiki/tutorial"
             },
             {
                 "id": 704,
                 "label": "API文档",
-                "path": "/wiki2/api"
+                "path": "/wiki/api"
             },
             {
                 "id": 705,
@@ -321,43 +358,6 @@
                 "id": 805,
                 "label": "数据分析",
                 "path": "/operation/analysis"
-            }
-        ]
-    },
-    {
-        "id": 6,
-        "label": "运维中心",
-        "url": "/ops",
-        "children": [
-            {
-                "id": 601,
-                "label": "监控",
-                "path": "/ops/mo12nitor"
-            },
-            {
-                "id": 602,
-                "label": "告警",
-                "path": "/ops/alert"
-            },
-            {
-                "id": 603,
-                "label": "作业",
-                "path": "/ops/job"
-            },
-            {
-                "id": 604,
-                "label": "发布",
-                "path": "/ops/deploy"
-            },
-            {
-                "id": 605,
-                "label": "备份",
-                "path": "/ops/backup"
-            },
-            {
-                "id": 606,
-                "label": "恢复",
-                "path": "/ops/restore"
             }
         ]
     }

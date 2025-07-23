@@ -11,17 +11,20 @@ import VxeUITable from "vxe-table";
 import "vxe-table/lib/style.css";
 const app = createApp(App);
 
-
-
 app.use(router).use(VxeUIAll).use(VxeUITable);
 app.use(pinia);
 app.use(ElementPlus);
 
-import menu from './json/menu.json'
-import menuDiff from './json/menuDiff.json'
-import { diffJson } from "./utils/diffJson";
+import oldData from './json/menu.json'
+import newData from './json/menuDiff.json'
+import { diffTree } from "./utils/diffJson";
 
+const diff = diffTree(oldData, newData, {
+  key: 'id',
+  childrenKey: 'children',
+  ignoreKeys: [],
+});
 
-console.log(diffJson(menu, menuDiff, 'wtf'));
+console.dir(diff, { depth: null, colors: true }); 
 
 app.mount("#app");
