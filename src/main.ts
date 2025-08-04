@@ -17,14 +17,14 @@ app.use(ElementPlus);
 
 import oldData from './json/menu.json'
 import newData from './json/menuDiff.json'
-import { diffTree } from "./utils/diffJson";
+// import { diffTree } from "./utils/diffJson";
 
-const diff = diffTree(oldData, newData, {
-  key: 'id',
-  childrenKey: 'children',
-  ignoreKeys: [],
-});
+// const diff = diffTree(oldData, newData, {
+//   key: 'id',
+//   childrenKey: 'children',
+//   ignoreKeys: [],
+// });
 
-console.dir(diff, { depth: null, colors: true }); 
+// console.dir(diff, { depth: null, colors: true }); 
 
 app.mount("#app");
