@@ -7,9 +7,9 @@ const routes: RouteRecordRaw[] = [
     redirect: "/taskList", // 根据错误提示添加 redirect 属性，这里使用示例路径，实际请替换为合适路径
   },
   {
-    path: "/task/:id",
-    name: "taskDetail",
-    component: () => import("../views/taskDetail.vue"),
+    path: "/taskList",
+    name: "taskList",
+    component: () => import("../views/taskList.vue"),
   },
 ];
 
